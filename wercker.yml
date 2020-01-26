@@ -71,4 +71,21 @@ build:
             code: |
                 cp -R ./ $WERCKER_OUTPUT_DIR
 
-    
+deploy:
+    steps:
+        - internal/docker-push:
+            username: $DOCKER_USERNAME
+            password: $DOCKER_PASSWORD
+            cmd: /pipeline/source/hello
+            port: "8080"
+            tag: latest
+            repository: redrgn/hello
+            registry: https://registry.hub.docker.com
+        - cng/cf-deploy:
+            api: $API
+            user: $USER
+            password: $PASSWORD
+            org: $ORG
+            space: $SPACE
+            appname: hello-world
+            docker_image: redrgn/hello-world
